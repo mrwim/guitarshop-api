@@ -9,5 +9,4 @@ public class GuitarshopApiApplication {
 	public static void main(String[] args) {
 		SpringApplication.run(GuitarshopApiApplication.class, args);
 	}
-
 }
