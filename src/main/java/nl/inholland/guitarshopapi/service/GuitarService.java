@@ -23,4 +23,29 @@ public class GuitarService {
         guitars.add(guitar);
         return guitars.indexOf(guitar);
     }
+
+    public void updateGuitar(Guitar guitar) {
+        guitars.stream()
+                .filter(g -> g.equals(guitar))
+                .findFirst()
+                .ifPresentOrElse(
+                        g -> guitars.set(guitars.indexOf(g), guitar),
+                        () -> {
+                            throw new IllegalArgumentException("Guitar not present");
+                        }
+                );
+
+    }
+
+    public void deleteGuitar(Guitar guitar) {
+        guitars.stream()
+                .filter(g -> g.equals(guitar))
+                .findFirst()
+                .ifPresentOrElse(
+                        g -> guitars.remove(g),
+                        () -> {
+                            throw new IllegalArgumentException("Guitar not present");
+                        }
+                );
+    }
 }
