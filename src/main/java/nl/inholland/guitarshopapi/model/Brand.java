@@ -1,5 +1,7 @@
 package nl.inholland.guitarshopapi.model;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
@@ -7,7 +9,8 @@ import jakarta.persistence.OneToMany;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @NoArgsConstructor
@@ -21,8 +24,9 @@ public class Brand {
     private String name;
     private String country;
 
-    @OneToMany(mappedBy = "brand")
-    private Set<Guitar> guitars;
+    @OneToMany(mappedBy = "brand", cascade = CascadeType.ALL)
+    @JsonManagedReference
+    private List<Guitar> guitars = new ArrayList<>();
 
     public Brand(String name, String country) {
         this.name = name;

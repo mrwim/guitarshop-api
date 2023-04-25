@@ -30,18 +30,18 @@ public class MyApplicationRunner implements ApplicationRunner {
     @Override
     @Transactional
     public void run(ApplicationArguments args) throws Exception {
-        List<Brand> brands = List.of(
-                new Brand("Fender", "USA"),
-                new Brand("Gibson", "USA"),
-                new Brand("Ibanez", "Japan"
-                ));
-        brandRepository.saveAll(brands);
+        brandRepository.saveAll(
+                List.of(new Brand("Fender", "USA"),
+                        new Brand("Gibson", "USA"),
+                        new Brand("Ibanez", "Japan"
+                        )));
+
         brandRepository.findAll().forEach(System.out::println);
 
         guitarRepository.saveAll(List.of(
-                new Guitar(brands.get(0), "Stratocaster", 1700.00),
-                new Guitar(brands.get(0), "Telecaster", 1299.00),
-                new Guitar(brands.get(1), "Les Paul", 2399.00)
+                new Guitar(brandRepository.findBrandByName("Fender"), "Stratocaster", 1700.00),
+                new Guitar(brandRepository.findBrandByName("Fender"), "Telecaster", 1299.00),
+                new Guitar(brandRepository.findBrandByName("Gibson"), "Les Paul", 2399.00)
         ));
 
         guitarRepository.findAll().forEach(System.out::println);

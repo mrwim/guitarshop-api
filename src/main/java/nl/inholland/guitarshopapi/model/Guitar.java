@@ -1,6 +1,7 @@
 package nl.inholland.guitarshopapi.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -18,8 +19,8 @@ public class Guitar {
     @GeneratedValue
     private Long id;
 
-    @ManyToOne
-    @JsonIgnore
+    @ManyToOne(cascade = CascadeType.ALL)
+    @JsonBackReference
     private Brand brand;
 
     @Column(unique = true)
