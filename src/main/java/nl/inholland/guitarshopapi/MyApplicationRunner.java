@@ -13,6 +13,7 @@ import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 @Component
 public class MyApplicationRunner implements ApplicationRunner {
@@ -48,13 +49,11 @@ public class MyApplicationRunner implements ApplicationRunner {
 
         List<StockItem> stockItems = new ArrayList<>();
         guitarRepository.findAll().forEach(
-                g -> stockItems.add(new StockItem(g, 10))
+                g -> stockItems.add(new StockItem(g, new Random().nextInt(15)))
         );
 
         stockItemRepository.saveAll(stockItems);
 
         stockItems.forEach(System.out::println);
-
-        brandRepository.findAll().forEach(System.out::println);
     }
 }

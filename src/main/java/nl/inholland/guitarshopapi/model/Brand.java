@@ -1,6 +1,6 @@
 package nl.inholland.guitarshopapi.model;
 
-import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -25,7 +25,7 @@ public class Brand {
     private String country;
 
     @OneToMany(mappedBy = "brand", cascade = CascadeType.ALL)
-    @JsonManagedReference
+    @JsonIgnore
     private List<Guitar> guitars = new ArrayList<>();
 
     public Brand(String name, String country) {
