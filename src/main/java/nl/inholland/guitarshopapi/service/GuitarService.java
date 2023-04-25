@@ -15,8 +15,9 @@ public class GuitarService {
     private GuitarRepository guitarRepository;
     private BrandRepository brandRepository;
 
-    public GuitarService(GuitarRepository guitarRepository) {
+    public GuitarService(GuitarRepository guitarRepository, BrandRepository brandRepository) {
         this.guitarRepository = guitarRepository;
+        this.brandRepository = brandRepository;
     }
 
     public Guitar addGuitar(GuitarDTO dto) {
