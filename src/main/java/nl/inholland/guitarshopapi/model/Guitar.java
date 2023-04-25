@@ -1,27 +1,32 @@
 package nl.inholland.guitarshopapi.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
-import jakarta.persistence.Table;
-import jakarta.persistence.UniqueConstraint;
+import jakarta.persistence.ManyToOne;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
 @NoArgsConstructor
 @Entity
-@Table(uniqueConstraints = @UniqueConstraint(columnNames = {"brand", "model"}))
 public class Guitar {
 
     @Id
     @GeneratedValue
     private Long id;
-    private String brand;
+
+    @ManyToOne
+    @JsonIgnore
+    private Brand brand;
+
+    @Column(unique = true)
     private String model;
     private double price;
 
-    public Guitar(String brand, String model, double price) {
+    public Guitar(Brand brand, String model, double price) {
         this.brand = brand;
         this.model = model;
         this.price = price;

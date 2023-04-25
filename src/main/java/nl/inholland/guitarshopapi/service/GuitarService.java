@@ -3,6 +3,7 @@ package nl.inholland.guitarshopapi.service;
 import jakarta.persistence.EntityNotFoundException;
 import nl.inholland.guitarshopapi.model.Guitar;
 import nl.inholland.guitarshopapi.model.dto.GuitarDTO;
+import nl.inholland.guitarshopapi.repository.BrandRepository;
 import nl.inholland.guitarshopapi.repository.GuitarRepository;
 import org.springframework.stereotype.Service;
 
@@ -12,6 +13,7 @@ import java.util.List;
 public class GuitarService {
 
     private GuitarRepository guitarRepository;
+    private BrandRepository brandRepository;
 
     public GuitarService(GuitarRepository guitarRepository) {
         this.guitarRepository = guitarRepository;
@@ -31,7 +33,6 @@ public class GuitarService {
         Guitar guitarToUpdate = guitarRepository
                 .findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Guitar not found"));
-        guitarToUpdate.setBrand(dto.getBrand());
         guitarToUpdate.setModel(dto.getModel());
         guitarToUpdate.setPrice(dto.getPrice());
         return guitarRepository.save(guitarToUpdate);
@@ -57,7 +58,7 @@ public class GuitarService {
 
     private Guitar mapDtoToGuitar(GuitarDTO dto) {
         Guitar newGuitar = new Guitar();
-        newGuitar.setBrand(dto.getBrand());
+        newGuitar.setBrand(brandRepository.findBrandByName(dto.getBrand()));
         newGuitar.setModel(dto.getModel());
         newGuitar.setPrice(dto.getPrice());
         return newGuitar;
