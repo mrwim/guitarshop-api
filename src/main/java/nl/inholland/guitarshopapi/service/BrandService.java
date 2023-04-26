@@ -5,6 +5,8 @@ import nl.inholland.guitarshopapi.model.Brand;
 import nl.inholland.guitarshopapi.repository.BrandRepository;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class BrandService {
 
@@ -22,5 +24,9 @@ public class BrandService {
         return brandRepository.getBrandByNameIgnoreCase(brand).orElseThrow(
                 () -> new EntityNotFoundException("Brand " + brand + "not found")
         );
+    }
+
+    public List<Brand> getAllBrands() {
+        return (List<Brand>) brandRepository.findAll();
     }
 }

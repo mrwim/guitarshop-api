@@ -1,8 +1,7 @@
 package nl.inholland.guitarshopapi.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
@@ -23,8 +22,7 @@ public class Brand {
 
     private String name;
     private String country;
-    @OneToMany(mappedBy = "brand", cascade = CascadeType.ALL)
-    @JsonIgnore
+    @OneToMany(mappedBy = "brand", fetch = FetchType.EAGER)
     private List<Guitar> guitars = new ArrayList<>();
 
     public Brand(String name, String country) {

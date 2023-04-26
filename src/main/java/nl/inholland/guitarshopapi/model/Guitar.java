@@ -1,5 +1,6 @@
 package nl.inholland.guitarshopapi.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -21,6 +22,7 @@ public class Guitar {
     private Long id;
 
     @ManyToOne
+    @JsonIgnoreProperties("guitars")
     private Brand brand;
 
     public Guitar(Brand brand, String model, double price) {

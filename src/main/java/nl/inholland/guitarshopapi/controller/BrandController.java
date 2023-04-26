@@ -17,8 +17,13 @@ public class BrandController {
         this.brandService = brandService;
     }
 
-    @GetMapping
+    @GetMapping(params = "name")
     public ResponseEntity getBrandByName(@RequestParam String name) {
         return ResponseEntity.ok().body(brandService.getBrandByName(name));
+    }
+
+    @GetMapping
+    public ResponseEntity getAllBrands() {
+        return ResponseEntity.ok().body(brandService.getAllBrands());
     }
 }
