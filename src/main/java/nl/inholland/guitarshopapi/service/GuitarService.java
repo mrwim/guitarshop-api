@@ -1,5 +1,6 @@
 package nl.inholland.guitarshopapi.service;
 
+import jakarta.persistence.EntityNotFoundException;
 import nl.inholland.guitarshopapi.model.Guitar;
 import nl.inholland.guitarshopapi.model.dto.GuitarDTO;
 import nl.inholland.guitarshopapi.repository.GuitarRepository;
@@ -22,35 +23,9 @@ public class GuitarService {
         return (List<Guitar>) guitarRepository.findAll();
     }
 
-    /* Only returning ID is not proper REST, but it will do for now */
     public Guitar addGuitar(GuitarDTO dto) {
         return guitarRepository.save(this.mapDtoToGuitar(dto));
     }
-//
-//    public void updateGuitar(Guitar guitar) {
-//        guitars.stream()
-//                .filter(g -> g.equals(guitar))
-//                .findFirst()
-//                .ifPresentOrElse(
-//                        g -> guitars.set(guitars.indexOf(g), guitar),
-//                        () -> {
-//                            throw new IllegalArgumentException("Guitar not present");
-//                        }
-//                );
-//
-//    }
-//
-//    public void deleteGuitar(Guitar guitar) {
-//        guitars.stream()
-//                .filter(g -> g.equals(guitar))
-//                .findFirst()
-//                .ifPresentOrElse(
-//                        g -> guitars.remove(g),
-//                        () -> {
-//                            throw new IllegalArgumentException("Guitar not present");
-//                        }
-//                );
-//    }
 
     private Guitar mapDtoToGuitar(GuitarDTO dto) {
         Guitar guitar = new Guitar();
@@ -58,5 +33,10 @@ public class GuitarService {
         guitar.setModel(dto.model());
         guitar.setPrice(dto.price());
         return guitar;
+    }
+
+    public Guitar getGuitarById(long id) {
+        return guitarRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Guitar not found"));
     }
 }

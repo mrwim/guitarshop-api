@@ -20,11 +20,16 @@ public class ApplicationDataInitializer implements ApplicationRunner {
     private GuitarService guitarService;
     private StockItemService stockItemService;
     private BrandService brandService;
+    private static final String FENDER = "Fender";
+    private static final String GIBSON = "Gibson";
+    private static final String IBANEZ = "Ibanez";
+    private Random randomizer;
 
-    public ApplicationDataInitializer(GuitarService guitarService, StockItemService stockItemService, BrandService brandService) {
+    public ApplicationDataInitializer(GuitarService guitarService, StockItemService stockItemService, BrandService brandService, Random randomizer) {
         this.guitarService = guitarService;
         this.stockItemService = stockItemService;
         this.brandService = brandService;
+        this.randomizer = randomizer;
     }
 
 
@@ -32,9 +37,9 @@ public class ApplicationDataInitializer implements ApplicationRunner {
     public void run(ApplicationArguments args) throws Exception {
 
         List<Brand> brands = List.of(
-                new Brand("Fender", "USA"),
-                new Brand("Gibson", "USA"),
-                new Brand("Ibanez", "Mexico")
+                new Brand(FENDER, "USA"),
+                new Brand(GIBSON, "USA"),
+                new Brand(IBANEZ, "Mexico")
         );
 
         brands.forEach(
@@ -42,9 +47,9 @@ public class ApplicationDataInitializer implements ApplicationRunner {
         );
 
         List.of(
-                new GuitarDTO("Fender", "Stratocaster", 1700.00),
-                new GuitarDTO("Fender", "Telecaster", 1299.00),
-                new GuitarDTO("Gibson", "Les Paul", 2399.00)
+                new GuitarDTO(FENDER, "Stratocaster", 1700.00),
+                new GuitarDTO(FENDER, "Telecaster", 1299.00),
+                new GuitarDTO(GIBSON, "Les Paul", 2399.00)
         ).forEach(
                 dto -> guitarService.addGuitar(dto)
         );
@@ -53,7 +58,7 @@ public class ApplicationDataInitializer implements ApplicationRunner {
 
         guitarService
                 .getAllGuitars()
-                .forEach(guitar -> stockItemService.addStockItem(guitar, new Random().nextInt(15)));
+                .forEach(guitar -> stockItemService.addStockItem(guitar, randomizer.nextInt(15)));
 
         stockItemService.getAllStockItems().forEach(System.out::println);
     }

@@ -7,6 +7,7 @@ import nl.inholland.guitarshopapi.service.GuitarService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -36,33 +37,21 @@ public class GuitarController {
         } catch (Exception e) {
             log.info(e.getMessage());
             return ResponseEntity.status(400)
-                    .body(new ExceptionDTO(400, e.getClass().getName(), "Oops. Check the logs"));
+                    .body(this.handleException(400, e));
         }
     }
 
+    @GetMapping("{id}")
+    public ResponseEntity getGuitarById(@PathVariable long id) {
+        try {
+            return ResponseEntity.ok().body(guitarService.getGuitarById(id));
+        } catch (Exception e) {
+            return this.handleException(404, e);
+        }
+    }
 
-//    @PutMapping
-//    public ResponseEntity updateGuitar(@RequestBody Guitar guitar) {
-//        try {
-//            guitarService.updateGuitar(guitar);
-//            return ResponseEntity.status(204).body(null);
-//        } catch (Exception e) {
-//            return this.handleException(e);
-//        }
-//    }
-//
-//    @DeleteMapping
-//    public ResponseEntity deleteGuitar(@RequestBody Guitar guitar) {
-//        try {
-//            guitarService.deleteGuitar(guitar);
-//            return ResponseEntity.status(204).body(null);
-//        } catch (Exception e) {
-//            return this.handleException(e);
-//        }
-//    }
-
-    private ResponseEntity handleException(Exception e) {
-        ExceptionDTO dto = new ExceptionDTO(400, e.getClass().getName(), e.getMessage());
-        return ResponseEntity.status(400).body(dto);
+    private ResponseEntity handleException(int status, Exception e) {
+        ExceptionDTO dto = new ExceptionDTO(status, e.getClass().getName(), e.getMessage());
+        return ResponseEntity.status(status).body(dto);
     }
 }
