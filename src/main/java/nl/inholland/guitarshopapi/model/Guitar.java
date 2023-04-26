@@ -1,31 +1,31 @@
 package nl.inholland.guitarshopapi.model;
 
-import lombok.AllArgsConstructor;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.Id;
+import jakarta.persistence.ManyToOne;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.Objects;
-
 @Data
-@AllArgsConstructor
 @NoArgsConstructor
+@Entity
 public class Guitar {
 
-    private String brand;
+    @Column(unique = true)
     private String model;
     private double price;
+    @Id
+    @GeneratedValue
+    private Long id;
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Guitar guitar = (Guitar) o;
-        return Objects.equals(brand, guitar.brand)
-                && Objects.equals(model, guitar.model);
-    }
+    @ManyToOne
+    private Brand brand;
 
-    @Override
-    public int hashCode() {
-        return Objects.hash(brand, model);
+    public Guitar(Brand brand, String model, double price) {
+        this.brand = brand;
+        this.model = model;
+        this.price = price;
     }
 }

@@ -1,4 +1,4 @@
 package nl.inholland.guitarshopapi.model.dto;
 
-public record ExceptionDTO(String exception, String message) {
+public record ExceptionDTO(int status, String exception, String message) {
 }
