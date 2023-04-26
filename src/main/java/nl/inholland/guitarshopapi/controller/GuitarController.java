@@ -18,39 +18,29 @@ import org.springframework.web.bind.annotation.RestController;
 @Log
 public class GuitarController {
 
-    private GuitarService guitarService;
+    private final GuitarService guitarService;
 
     public GuitarController(GuitarService guitarService) {
         this.guitarService = guitarService;
     }
 
     @GetMapping
-    public ResponseEntity getAllGuitars() {
+    public ResponseEntity<Object> getAllGuitars() {
         return ResponseEntity.ok(guitarService.getAllGuitars());
     }
 
     @PostMapping
-    public ResponseEntity addGuitar(@RequestBody GuitarDTO dto) {
-        try {
-            return ResponseEntity.status(HttpStatus.CREATED)
-                    .body(guitarService.addGuitar(dto));
-        } catch (Exception e) {
-            log.info(e.getMessage());
-            return ResponseEntity.status(400)
-                    .body(this.handleException(400, e));
-        }
+    public ResponseEntity<Object> addGuitar(@RequestBody GuitarDTO dto) {
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body(guitarService.addGuitar(dto));
     }
 
     @GetMapping("{id}")
-    public ResponseEntity getGuitarById(@PathVariable long id) {
-        try {
-            return ResponseEntity.ok().body(guitarService.getGuitarById(id));
-        } catch (Exception e) {
-            return this.handleException(404, e);
-        }
+    public ResponseEntity<Object> getGuitarById(@PathVariable long id) {
+        return ResponseEntity.ok().body(guitarService.getGuitarById(id));
     }
 
-    private ResponseEntity handleException(int status, Exception e) {
+    private ResponseEntity<Object> handleException(int status, Exception e) {
         ExceptionDTO dto = new ExceptionDTO(status, e.getClass().getName(), e.getMessage());
         return ResponseEntity.status(status).body(dto);
     }

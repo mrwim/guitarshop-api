@@ -11,19 +11,19 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("brands")
 public class BrandController {
 
-    private BrandService brandService;
+    private final BrandService brandService;
 
     public BrandController(BrandService brandService) {
         this.brandService = brandService;
     }
 
     @GetMapping(params = "name")
-    public ResponseEntity getBrandByName(@RequestParam String name) {
+    public ResponseEntity<Object> getBrandByName(@RequestParam String name) {
         return ResponseEntity.ok().body(brandService.getBrandByName(name));
     }
 
     @GetMapping
-    public ResponseEntity getAllBrands() {
+    public ResponseEntity<Object> getAllBrands() {
         return ResponseEntity.ok().body(brandService.getAllBrands());
     }
 }

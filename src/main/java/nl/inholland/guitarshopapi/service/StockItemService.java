@@ -12,7 +12,7 @@ import java.util.Random;
 @Service
 public class StockItemService {
 
-    private StockItemRepository stockItemRepository;
+    private final StockItemRepository stockItemRepository;
 
     public StockItemService(StockItemRepository stockItemRepository) {
         this.stockItemRepository = stockItemRepository;

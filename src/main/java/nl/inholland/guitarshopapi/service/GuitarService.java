@@ -11,8 +11,8 @@ import java.util.List;
 @Service
 public class GuitarService {
 
-    private GuitarRepository guitarRepository;
-    private BrandService brandService;
+    private final GuitarRepository guitarRepository;
+    private final BrandService brandService;
 
     public GuitarService(GuitarRepository guitarRepository, BrandService brandService) {
         this.guitarRepository = guitarRepository;
