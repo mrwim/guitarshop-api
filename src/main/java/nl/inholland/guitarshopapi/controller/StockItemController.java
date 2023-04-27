@@ -22,7 +22,7 @@ public class StockItemController {
         return ResponseEntity.ok(stockItemService.getAllStockItems());
     }
 
-    @GetMapping("{id}")
+    @GetMapping("guitars/{id}")
     public ResponseEntity<Object> getStockItemByGuitarId(@PathVariable long id) {
         return ResponseEntity.ok().body(stockItemService.getStockItemByGuitarId(id));
     }
