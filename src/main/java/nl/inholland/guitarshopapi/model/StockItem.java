@@ -2,6 +2,7 @@ package nl.inholland.guitarshopapi.model;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.SequenceGenerator;
@@ -14,7 +15,7 @@ import lombok.NoArgsConstructor;
 @SequenceGenerator(name = "stockitem_seq", initialValue = 1_000_001)
 public class StockItem {
     @Id
-    @GeneratedValue(generator = "stockitem_seq")
+    @GeneratedValue(generator = "stockitem_seq", strategy = GenerationType.SEQUENCE)
     private Long id;
 
     @OneToOne
