@@ -8,12 +8,10 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.ManyToOne;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
 @Data
-@NoArgsConstructor
 @Entity
-public class Guitar {
+public class Guitar extends StringInstrument {
 
     @Column(unique = true)
     private String model;
@@ -27,8 +25,21 @@ public class Guitar {
     private Brand brand;
 
     public Guitar(Brand brand, String model, double price) {
+        this();
         this.brand = brand;
         this.model = model;
+        this.price = price;
+    }
+
+    public Guitar() {
+        this.numberOfStrings = 6;
+    }
+
+
+    public void setPrice(double price) {
+        if (price < 0) {
+            throw new IllegalArgumentException("Guitar price cannot be negative");
+        }
         this.price = price;
     }
 }
