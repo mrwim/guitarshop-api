@@ -1,44 +1,45 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
-	<modelVersion>4.0.0</modelVersion>
-	<parent>
-		<groupId>org.springframework.boot</groupId>
-		<artifactId>spring-boot-starter-parent</artifactId>
-		<version>3.0.6</version>
-		<relativePath/> <!-- lookup parent from repository -->
-	</parent>
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-parent</artifactId>
+        <version>3.0.6</version>
+        <relativePath/> <!-- lookup parent from repository -->
+    </parent>
 
-	<groupId>nl.inholland</groupId>
-	<artifactId>guitarshop-api</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
-	<name>guitarshop-api</name>
-	<description>Inholland Project for Java Advanced 2023</description>
+    <groupId>nl.inholland</groupId>
+    <artifactId>guitarshop-api</artifactId>
+    <version>0.0.1-SNAPSHOT</version>
+    <name>guitarshop-api</name>
+    <description>Inholland Project for Java Advanced 2023</description>
 
-	<developers>
-		<developer>
-			<name>Willem Wiltenburg</name>
-			<organization>Hogeschool Inholland</organization>
-			<organizationUrl>https://www.inholland.nl</organizationUrl>
-			<email>willem.wiltenburg@inholland.nl</email>
-			<roles>
-				<role>Lecturer</role>
-				<role>Lead Developer</role>
-			</roles>
-			<properties>
-				<tagline>Have you created a GitHub issue yet?</tagline>
-			</properties>
-		</developer>
-	</developers>
+    <developers>
+        <developer>
+            <name>Willem Wiltenburg</name>
+            <organization>Hogeschool Inholland</organization>
+            <organizationUrl>https://www.inholland.nl</organizationUrl>
+            <email>willem.wiltenburg@inholland.nl</email>
+            <roles>
+                <role>Lecturer</role>
+                <role>Lead Developer</role>
+            </roles>
+            <properties>
+                <tagline>Have you created a GitHub issue yet?</tagline>
+            </properties>
+        </developer>
+    </developers>
 
-	<properties>
-		<java.version>17</java.version>
-		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-	</properties>
+    <properties>
+        <java.version>17</java.version>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <cucumber.version>7.11.2</cucumber.version>
+    </properties>
 
-	<dependencies>
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
+    <dependencies>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
             <!--			Transient dependency snakeyaml 1.33 is unsafe.
                             Excluded and added safe snakeyaml version 2.0 separately -->
@@ -77,15 +78,30 @@
             <artifactId>spring-boot-starter-test</artifactId>
             <scope>test</scope>
         </dependency>
+        <!--Added as per cucumber.io-->
+        <dependency>
+            <groupId>io.cucumber</groupId>
+            <artifactId>cucumber-java</artifactId>
+            <version>${cucumber.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>io.cucumber</groupId>
+            <artifactId>cucumber-spring</artifactId>
+            <version>${cucumber.version}</version>
+            <scope>test</scope>
+        </dependency>
+
     </dependencies>
 
-	<build>
-		<plugins>
-			<plugin>
-				<groupId>org.springframework.boot</groupId>
-				<artifactId>spring-boot-maven-plugin</artifactId>
-			</plugin>
-		</plugins>
-	</build>
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+            </plugin>
+        </plugins>
+
+    </build>
 
 </project>

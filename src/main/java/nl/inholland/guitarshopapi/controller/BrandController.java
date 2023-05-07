@@ -4,6 +4,7 @@ import nl.inholland.guitarshopapi.model.Brand;
 import nl.inholland.guitarshopapi.service.BrandService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -31,7 +32,7 @@ public class BrandController {
     }
 
     @PostMapping
-    public ResponseEntity<Object> addBrand(Brand brand) {
+    public ResponseEntity<Object> addBrand(@Validated Brand brand) {
         return ResponseEntity.status(HttpStatus.CREATED).body(brandService.addBrand(brand));
     }
 }

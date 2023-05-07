@@ -13,6 +13,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.Collections;
+import java.util.Objects;
+
 @RestController
 @RequestMapping("guitars")
 @Log
@@ -31,6 +34,12 @@ public class GuitarController {
 
     @PostMapping
     public ResponseEntity<Object> addGuitar(@RequestBody GuitarDTO dto) {
+        if (Objects.isNull(dto) ||
+                this.isDtoEmpty(dto)) {
+            return ResponseEntity.status(400).body(
+                    Collections.singletonMap("error", "Object is null")
+            );
+        }
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(guitarService.addGuitar(dto));
     }
@@ -43,5 +52,12 @@ public class GuitarController {
     private ResponseEntity<Object> handleException(int status, Exception e) {
         ExceptionDTO dto = new ExceptionDTO(status, e.getClass().getName(), e.getMessage());
         return ResponseEntity.status(status).body(dto);
+    }
+
+    private boolean isDtoEmpty(GuitarDTO dto) {
+        return dto.brand() == null &&
+                dto.price() == 0 &&
+                dto.model() == null;
+
     }
 }
