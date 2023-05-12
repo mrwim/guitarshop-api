@@ -1,5 +1,6 @@
 package nl.inholland.guitarshopapi.controller;
 
+import jakarta.validation.Valid;
 import lombok.extern.java.Log;
 import nl.inholland.guitarshopapi.model.dto.ExceptionDTO;
 import nl.inholland.guitarshopapi.model.dto.GuitarDTO;
@@ -30,7 +31,7 @@ public class GuitarController {
     }
 
     @PostMapping
-    public ResponseEntity<Object> addGuitar(@RequestBody GuitarDTO dto) {
+    public ResponseEntity<Object> addGuitar(@RequestBody @Valid GuitarDTO dto) {
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(guitarService.addGuitar(dto));
     }
