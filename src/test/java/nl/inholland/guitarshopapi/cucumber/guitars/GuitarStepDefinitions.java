@@ -3,10 +3,14 @@ package nl.inholland.guitarshopapi.cucumber.guitars;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.jayway.jsonpath.JsonPath;
+import io.cucumber.java.Before;
 import io.cucumber.java.en.And;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
+import lombok.SneakyThrows;
+import lombok.extern.java.Log;
+import nl.inholland.guitarshopapi.configuration.SSLUtils;
 import nl.inholland.guitarshopapi.model.Guitar;
 import org.junit.jupiter.api.Assertions;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,6 +23,7 @@ import org.springframework.http.ResponseEntity;
 import java.util.Arrays;
 import java.util.List;
 
+@Log
 public class GuitarStepDefinitions extends BaseStepDefinitions {
 
     HttpHeaders httpHeaders = new HttpHeaders();
@@ -28,8 +33,17 @@ public class GuitarStepDefinitions extends BaseStepDefinitions {
     @Autowired
     private ObjectMapper mapper;
 
+
+    @SneakyThrows
+    @Before
+    public void init() {
+        SSLUtils.turnOffSslChecking();
+        log.info("Turned off SSL checking");
+    }
+
     @Given("The endpoint for {string} is available for method {string}")
     public void theEndpointForIsAvailableForMethod(String endpoint, String method) {
+
         response = restTemplate.exchange(
                 "/" + endpoint,
                 HttpMethod.OPTIONS,
