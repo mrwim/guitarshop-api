@@ -11,3 +11,4 @@ Feature: Everything to do with guitars
     When I provide a guitar with brand name "Fender" and model name "Jaguar"
     Then I get http status 201
     And The price of the guitar is 0
+
