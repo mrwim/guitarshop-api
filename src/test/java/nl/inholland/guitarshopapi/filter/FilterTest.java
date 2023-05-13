@@ -22,9 +22,10 @@ class FilterTest {
     void testLargeRequestFilter() throws ServletException, IOException {
         MockHttpServletRequest request = new MockHttpServletRequest();
         request.setContent(TestHelper.returnStringOfSize(maxSize).getBytes());
-        LargeRequestFilter filter = new LargeRequestFilter();
-        MockFilterChain chain = new MockFilterChain();
         MockHttpServletResponse response = new MockHttpServletResponse();
+        MockFilterChain chain = new MockFilterChain();
+        LargeRequestFilter filter = new LargeRequestFilter();
+
         Exception exception = Assertions.assertThrows(ServletException.class,
                 () -> filter.doFilter(request, response, chain));
         Assertions.assertEquals("Request too large", exception.getMessage());
