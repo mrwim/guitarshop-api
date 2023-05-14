@@ -27,6 +27,7 @@ public class GuitarController {
     }
 
     @GetMapping
+    @PreAuthorize("hasAnyRole('USER', 'ADMIN')")
     public ResponseEntity<Object> getAllGuitars() {
         return ResponseEntity.ok(guitarService.getAllGuitars());
     }
