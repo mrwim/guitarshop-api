@@ -28,6 +28,8 @@ public class LoginStepDefinitions extends BaseStepDefinitions {
     private String token;
     private HttpHeaders httpHeaders = new HttpHeaders();
     private ResponseEntity response;
+
+
     @Autowired
     private TestRestTemplate restTemplate;
     @Autowired
@@ -40,9 +42,9 @@ public class LoginStepDefinitions extends BaseStepDefinitions {
         log.info("Turned off SSL checking");
     }
 
-    @Given("I have a valid login object with user {string} and password {string}")
-    public void iHaveAValidLoginObjectWithUserAndPassword(String username, String password) {
-        loginDTO = new LoginDTO(username, password);
+    @Given("I have a valid login object with valid user and valid password")
+    public void iHaveAValidLoginObjectWithUserAndPassword() {
+        loginDTO = new LoginDTO(VALID_USER, VALID_PASSWORD);
     }
 
     @When("I call the application login endpoint")
@@ -61,5 +63,20 @@ public class LoginStepDefinitions extends BaseStepDefinitions {
     public void iReceiveAToken() throws JsonProcessingException {
         TokenDTO dto = objectMapper.readValue(response.getBody().toString(), TokenDTO.class);
         Assertions.assertNotNull(dto.token());
+    }
+
+    @Given("I have a valid username but invalid password")
+    public void iHaveAValidUsernameButInvalidPassword() {
+        loginDTO = new LoginDTO(VALID_USER, INVALID_PASSWORD);
+    }
+
+    @Then("I receive http status {int}")
+    public void iReceiveHttpStatus(int status) {
+        Assertions.assertEquals(status, response.getStatusCode().value());
+    }
+
+    @Given("I have an invalid username and valid password")
+    public void iHaveAnInvalidUsernameAndValidPassword() {
+        loginDTO = new LoginDTO(INVALID_USERNAME, VALID_PASSWORD);
     }
 }

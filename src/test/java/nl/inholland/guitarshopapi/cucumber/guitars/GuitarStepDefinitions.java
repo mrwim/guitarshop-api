@@ -12,6 +12,8 @@ import lombok.SneakyThrows;
 import lombok.extern.java.Log;
 import nl.inholland.guitarshopapi.configuration.SSLUtils;
 import nl.inholland.guitarshopapi.model.Guitar;
+import nl.inholland.guitarshopapi.model.dto.LoginDTO;
+import nl.inholland.guitarshopapi.model.dto.TokenDTO;
 import org.junit.jupiter.api.Assertions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.web.client.TestRestTemplate;
@@ -32,6 +34,8 @@ public class GuitarStepDefinitions extends BaseStepDefinitions {
     private ResponseEntity response;
     @Autowired
     private ObjectMapper mapper;
+
+    private String token;
 
 
     @SneakyThrows
@@ -62,6 +66,8 @@ public class GuitarStepDefinitions extends BaseStepDefinitions {
 
     @When("I retrieve all guitars")
     public void iRetrieveAllGuitars() {
+        httpHeaders.clear();
+        httpHeaders.add("Authorization", "Bearer " + token);
         response = restTemplate.exchange(
                 "/guitars",
                 HttpMethod.GET,
@@ -88,6 +94,7 @@ public class GuitarStepDefinitions extends BaseStepDefinitions {
     @When("I provide a guitar with brand name {string} and model name {string}")
     public void iProvideAGuitarWithBrandNameAndModelName(String brand, String model) throws JsonProcessingException {
         httpHeaders.add("Content-Type", "application/json");
+        httpHeaders.add("Authorization", "Bearer " + token);
         response = restTemplate.exchange(
                 "/guitars",
                 HttpMethod.POST,
@@ -107,5 +114,30 @@ public class GuitarStepDefinitions extends BaseStepDefinitions {
         Guitar guitar = mapper.readValue(body, Guitar.class);
         double actual = guitar.getPrice();
         Assertions.assertEquals(price, actual);
+    }
+
+    @Given("I log in as user")
+    public void iLogInAsUser() throws JsonProcessingException {
+        httpHeaders.clear();
+        httpHeaders.add("Content-Type", "application/json");
+        LoginDTO loginDTO = new LoginDTO(VALID_USER, VALID_PASSWORD);
+        token = getToken(loginDTO);
+    }
+
+    private String getToken(LoginDTO loginDTO) throws JsonProcessingException {
+        response = restTemplate
+                .exchange("/members",
+                        HttpMethod.POST,
+                        new HttpEntity<>(mapper.writeValueAsString(loginDTO), httpHeaders), String.class);
+        TokenDTO tokenDTO = mapper.readValue(response.getBody().toString(), TokenDTO.class);
+        return tokenDTO.token();
+    }
+
+    @Given("I log in as admin")
+    public void iLogInAsAdmin() throws JsonProcessingException {
+        httpHeaders.clear();
+        httpHeaders.add("Content-Type", "application/json");
+        LoginDTO loginDTO = new LoginDTO(VALID_ADMIN, VALID_PASSWORD);
+        token = getToken(loginDTO);
     }
 }
