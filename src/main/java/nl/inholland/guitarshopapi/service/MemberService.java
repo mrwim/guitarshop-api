@@ -1,7 +1,6 @@
 package nl.inholland.guitarshopapi.service;
 
 import nl.inholland.guitarshopapi.model.Member;
-import nl.inholland.guitarshopapi.model.Role;
 import nl.inholland.guitarshopapi.repository.MemberRepository;
 import nl.inholland.guitarshopapi.util.JwtTokenProvider;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -42,8 +41,7 @@ public class MemberService {
     public String login(String username, String password) {
         try {
             authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(username, password));
-            String token = jwtTokenProvider.createToken(username, new ArrayList<Role>());
-            return token;
+            return jwtTokenProvider.createToken(username, new ArrayList<>());
         } catch (Exception e) {
             throw new IllegalArgumentException("Invalid Credentials");
         }

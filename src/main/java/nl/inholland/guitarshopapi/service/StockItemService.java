@@ -13,9 +13,11 @@ import java.util.Random;
 public class StockItemService {
 
     private final StockItemRepository stockItemRepository;
+    private Random randomizer;
 
-    public StockItemService(StockItemRepository stockItemRepository) {
+    public StockItemService(StockItemRepository stockItemRepository, Random randomizer) {
         this.stockItemRepository = stockItemRepository;
+        this.randomizer = randomizer;
     }
 
     public List<StockItem> getAllStockItems() {
@@ -31,9 +33,9 @@ public class StockItemService {
 
     }
 
-    public StockItem addStockItem(Guitar guitar, int quantity) {
+    public StockItem addStockItem(Guitar guitar) {
         return stockItemRepository.save(new StockItem(
-                guitar, new Random().nextInt(15)
+                guitar, randomizer.nextInt(15)
         ));
     }
 

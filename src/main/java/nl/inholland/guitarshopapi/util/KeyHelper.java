@@ -8,7 +8,6 @@ import java.security.Key;
 import java.security.KeyStore;
 import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
-import java.security.PrivateKey;
 import java.security.UnrecoverableKeyException;
 import java.security.cert.CertificateException;
 
@@ -22,6 +21,6 @@ public class KeyHelper {
         Resource resource = new ClassPathResource(keystore);
         KeyStore keyStore = KeyStore.getInstance("PKCS12");
         keyStore.load(resource.getInputStream(), password.toCharArray());
-        return (PrivateKey) keyStore.getKey(alias, password.toCharArray());
+        return keyStore.getKey(alias, password.toCharArray());
     }
 }

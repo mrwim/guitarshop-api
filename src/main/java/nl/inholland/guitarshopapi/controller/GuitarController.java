@@ -2,7 +2,6 @@ package nl.inholland.guitarshopapi.controller;
 
 import jakarta.validation.Valid;
 import lombok.extern.java.Log;
-import nl.inholland.guitarshopapi.model.dto.ExceptionDTO;
 import nl.inholland.guitarshopapi.model.dto.GuitarDTO;
 import nl.inholland.guitarshopapi.service.GuitarService;
 import org.springframework.http.HttpStatus;
@@ -42,10 +41,5 @@ public class GuitarController {
     @GetMapping("{id}")
     public ResponseEntity<Object> getGuitarById(@PathVariable long id) {
         return ResponseEntity.ok().body(guitarService.getGuitarById(id));
-    }
-
-    private ResponseEntity<Object> handleException(int status, Exception e) {
-        ExceptionDTO dto = new ExceptionDTO(status, e.getClass().getName(), e.getMessage());
-        return ResponseEntity.status(status).body(dto);
     }
 }

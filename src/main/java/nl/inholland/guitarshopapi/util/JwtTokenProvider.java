@@ -15,16 +15,10 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
-import java.io.IOException;
-import java.security.KeyStoreException;
-import java.security.NoSuchAlgorithmException;
 import java.security.PrivateKey;
-import java.security.UnrecoverableKeyException;
-import java.security.cert.CertificateException;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
-import java.util.stream.Collectors;
 
 @Component
 public class JwtTokenProvider {
@@ -50,19 +44,19 @@ public class JwtTokenProvider {
     }
 
     @PostConstruct
-    protected void init() throws UnrecoverableKeyException, CertificateException, KeyStoreException, IOException, NoSuchAlgorithmException {
+    protected void init() throws Exception {
         keystore = keystore.replace("classpath:", "");
         privateKey = (PrivateKey) KeyHelper.getPrivateKey(alias, keystore, password);
     }
 
-    public String createToken(String memberName, List<Role> roles) throws UnrecoverableKeyException, CertificateException, KeyStoreException, IOException, NoSuchAlgorithmException {
+    public String createToken(String memberName, List<Role> roles) throws Exception {
         Claims claims = Jwts.claims().setSubject(memberName);
         claims.put("auth",
                 roles
                         .stream()
                         .map(r -> new SimpleGrantedAuthority(r.getAuthority()))
                         .filter(Objects::nonNull)
-                        .collect(Collectors.toList()));
+                        .toList());
 
         Date now = new Date();
         Date expiration = new Date(now.getTime() + validityInMicroseconds);

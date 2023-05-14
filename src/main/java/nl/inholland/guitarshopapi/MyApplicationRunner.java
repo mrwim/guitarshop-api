@@ -13,7 +13,6 @@ import nl.inholland.guitarshopapi.service.MemberService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
@@ -30,7 +29,6 @@ public class MyApplicationRunner implements ApplicationRunner {
     private BrandRepository brandRepository;
     private GuitarRepository guitarRepository;
     private StockItemRepository stockItemRepository;
-    private BCryptPasswordEncoder bCryptPasswordEncoder;
     private MemberService memberService;
 
     @Autowired
