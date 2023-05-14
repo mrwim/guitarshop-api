@@ -3,13 +3,17 @@ package nl.inholland.guitarshopapi;
 import jakarta.transaction.Transactional;
 import nl.inholland.guitarshopapi.model.Brand;
 import nl.inholland.guitarshopapi.model.Guitar;
+import nl.inholland.guitarshopapi.model.Member;
+import nl.inholland.guitarshopapi.model.Role;
 import nl.inholland.guitarshopapi.model.StockItem;
 import nl.inholland.guitarshopapi.repository.BrandRepository;
 import nl.inholland.guitarshopapi.repository.GuitarRepository;
 import nl.inholland.guitarshopapi.repository.StockItemRepository;
+import nl.inholland.guitarshopapi.service.MemberService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
@@ -26,13 +30,18 @@ public class MyApplicationRunner implements ApplicationRunner {
     private BrandRepository brandRepository;
     private GuitarRepository guitarRepository;
     private StockItemRepository stockItemRepository;
+    private BCryptPasswordEncoder bCryptPasswordEncoder;
+    private MemberService memberService;
+
     @Autowired
     private Random randomizer;
 
-    public MyApplicationRunner(BrandRepository brandRepository, GuitarRepository guitarRepository, StockItemRepository stockItemRepository) {
+    public MyApplicationRunner(BrandRepository brandRepository, GuitarRepository guitarRepository, StockItemRepository stockItemRepository, MemberService memberService, Random randomizer) {
         this.brandRepository = brandRepository;
         this.guitarRepository = guitarRepository;
         this.stockItemRepository = stockItemRepository;
+        this.memberService = memberService;
+        this.randomizer = randomizer;
     }
 
     @Override
@@ -62,7 +71,19 @@ public class MyApplicationRunner implements ApplicationRunner {
         stockItemRepository.saveAll(stockItems);
 
         stockItems.forEach(System.out::println);
+
+        Member admin = new Member();
+        admin.setUsername("admin");
+        admin.setPassword("password");
+        admin.setRoles(List.of(Role.ROLE_ADMIN));
+        memberService.add(admin);
+
+        Member user = new Member();
+        user.setUsername("user");
+        user.setPassword("password");
+        user.setRoles(List.of(Role.ROLE_USER));
+        memberService.add(user);
+
+        memberService.getAllMembers().forEach(System.out::println);
     }
-
-
 }

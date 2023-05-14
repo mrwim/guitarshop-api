@@ -2,7 +2,6 @@ package nl.inholland.guitarshopapi.filter;
 
 
 import jakarta.servlet.ServletException;
-import nl.inholland.guitarshopapi.LargeRequestFilter;
 import nl.inholland.guitarshopapi.configuration.TestHelper;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;

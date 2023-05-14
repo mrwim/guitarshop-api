@@ -1,4 +1,4 @@
-package nl.inholland.guitarshopapi;
+package nl.inholland.guitarshopapi.filter;
 
 import jakarta.servlet.Filter;
 import jakarta.servlet.FilterChain;

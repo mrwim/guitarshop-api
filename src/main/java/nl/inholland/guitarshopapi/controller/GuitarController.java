@@ -7,6 +7,7 @@ import nl.inholland.guitarshopapi.model.dto.GuitarDTO;
 import nl.inholland.guitarshopapi.service.GuitarService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -31,6 +32,7 @@ public class GuitarController {
     }
 
     @PostMapping
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Object> addGuitar(@RequestBody @Valid GuitarDTO dto) {
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(guitarService.addGuitar(dto));
