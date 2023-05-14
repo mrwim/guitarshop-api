@@ -19,7 +19,7 @@ class FilterTest {
     private int maxSize;
 
     @Test
-    void testLargeRequestFilter() throws ServletException, IOException {
+    void testRequestWithBodySizeLargerThanMaxSizeShouldThrowServletException() throws ServletException, IOException {
         MockHttpServletRequest request = new MockHttpServletRequest();
         request.setContent(TestHelper.returnStringOfSize(maxSize).getBytes());
         MockHttpServletResponse response = new MockHttpServletResponse();
