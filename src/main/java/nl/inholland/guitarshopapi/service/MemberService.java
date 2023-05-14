@@ -3,26 +3,22 @@ package nl.inholland.guitarshopapi.service;
 import nl.inholland.guitarshopapi.model.Member;
 import nl.inholland.guitarshopapi.repository.MemberRepository;
 import nl.inholland.guitarshopapi.util.JwtTokenProvider;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
+import javax.naming.AuthenticationException;
 import java.util.List;
 
 @Service
 public class MemberService {
 
-    private MemberRepository memberRepository;
-    private BCryptPasswordEncoder bCryptPasswordEncoder;
-    private AuthenticationManager authenticationManager;
-    private JwtTokenProvider jwtTokenProvider;
+    private final MemberRepository memberRepository;
+    private final BCryptPasswordEncoder bCryptPasswordEncoder;
+    private final JwtTokenProvider jwtTokenProvider;
 
-    public MemberService(MemberRepository memberRepository, BCryptPasswordEncoder bCryptPasswordEncoder, AuthenticationManager authenticationManager, JwtTokenProvider jwtTokenProvider) {
+    public MemberService(MemberRepository memberRepository, BCryptPasswordEncoder bCryptPasswordEncoder, JwtTokenProvider jwtTokenProvider) {
         this.memberRepository = memberRepository;
         this.bCryptPasswordEncoder = bCryptPasswordEncoder;
-        this.authenticationManager = authenticationManager;
         this.jwtTokenProvider = jwtTokenProvider;
     }
 
@@ -38,8 +34,22 @@ public class MemberService {
         return (List<Member>) memberRepository.findAll();
     }
 
+
     public String login(String username, String password) throws Exception {
-        authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(username, password));
-        return jwtTokenProvider.createToken(username, new ArrayList<>());
+        // See if a user with the provided username exists
+        Member member = this.memberRepository.findMemberByUsername(username).orElse(null);
+
+        // If they don't, throw an exception (handled in our global exception handler)
+        if (member == null) {
+            throw new AuthenticationException("User not found");
+        }
+
+        // If they do, check if the password hash matches
+        if (bCryptPasswordEncoder.matches(password, member.getPassword())) {
+            // Return a JWT to the client
+            return jwtTokenProvider.createToken(member.getUsername(), member.getRoles());
+        } else {
+            throw new AuthenticationException("Invalid username/password");
+        }
     }
 }

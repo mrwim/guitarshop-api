@@ -12,6 +12,8 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
+import javax.naming.AuthenticationException;
+
 @ControllerAdvice
 @Log
 public class GuitarshopExceptionHandler extends ResponseEntityExceptionHandler {
@@ -37,6 +39,19 @@ public class GuitarshopExceptionHandler extends ResponseEntityExceptionHandler {
                                 404,
                                 entityNotFoundException.getClass().getName(),
                                 entityNotFoundException.getMessage()
+                        )
+                );
+    }
+
+    @ExceptionHandler(value = {AuthenticationException.class})
+    public ResponseEntity<Object> handleAuthenticationException(AuthenticationException authenticationException,
+                                                                WebRequest webRequest) {
+        return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                .body(
+                        new ExceptionDTO(
+                                403,
+                                authenticationException.getClass().getName(),
+                                authenticationException.getMessage()
                         )
                 );
     }

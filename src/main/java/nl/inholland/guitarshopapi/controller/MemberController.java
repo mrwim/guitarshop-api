@@ -20,8 +20,8 @@ public class MemberController {
 
     @PostMapping
     public Object login(@RequestBody LoginDTO dto) throws Exception {
-        return new TokenDTO(
-                memberService.login(dto.username(), dto.password())
-        );
+            return new TokenDTO(
+                    memberService.login(dto.username(), dto.password())
+            );
     }
 }

@@ -1,11 +1,7 @@
 package nl.inholland.guitarshopapi.util;
 
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.JwtException;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.*;
 import jakarta.annotation.PostConstruct;
-import jakarta.servlet.http.HttpServletRequest;
 import nl.inholland.guitarshopapi.model.Role;
 import nl.inholland.guitarshopapi.service.MemberDetailsService;
 import org.springframework.beans.factory.annotation.Value;
@@ -18,10 +14,12 @@ import org.springframework.stereotype.Component;
 import java.security.PrivateKey;
 import java.util.Date;
 import java.util.List;
-import java.util.Objects;
 
 @Component
 public class JwtTokenProvider {
+
+    // Link to the documentation of the used JWT library:
+    // https://github.com/jwtk/jjwt
 
     @Value("${server.ssl.key-store}")
     private String keystore;
@@ -35,9 +33,10 @@ public class JwtTokenProvider {
     @Value("${server.ssl.key-alias}")
     private String alias;
 
-    private MemberDetailsService memberDetailsService;
-
+    // We'll get the private key from the key store
     private PrivateKey privateKey;
+
+    private final MemberDetailsService memberDetailsService;
 
     public JwtTokenProvider(MemberDetailsService memberDetailsService) {
         this.memberDetailsService = memberDetailsService;
@@ -49,53 +48,60 @@ public class JwtTokenProvider {
         privateKey = (PrivateKey) KeyHelper.getPrivateKey(alias, keystore, password);
     }
 
-    public String createToken(String memberName, List<Role> roles) throws Exception {
-        Claims claims = Jwts.claims().setSubject(memberName);
+    public String createToken(String username, List<Role> roles) throws JwtException {
+
+        /* The token will look something like this
+
+        {
+          "sub": "admin",
+          "auth": [
+            {
+              "role": "ROLE_ADMIN"
+            }
+          ],
+          "iat": 1684073744,
+          "exp": 1684077344
+        }
+
+        */
+
+        // We create a new Claims object for the token
+        // The username is the subject
+        Claims claims = Jwts.claims().setSubject(username);
+
+        // And we add an array of the roles to the auth element of the Claims
         claims.put("auth",
                 roles
                         .stream()
                         .map(r -> new SimpleGrantedAuthority(r.getAuthority()))
-                        .filter(Objects::nonNull)
                         .toList());
 
+        // We decide on an expiration date
         Date now = new Date();
         Date expiration = new Date(now.getTime() + validityInMicroseconds);
 
+        // And finally, generate the token and sign it. .compact() then turns it into a string that we can return.
         return Jwts.builder()
                 .setClaims(claims)
                 .setIssuedAt(now)
                 .setExpiration(expiration)
-                .signWith(SignatureAlgorithm.HS256,
-                        privateKey.getEncoded())
+                .signWith(privateKey)
                 .compact();
     }
 
     public Authentication getAuthentication(String token) {
-        UserDetails userDetails = memberDetailsService.loadUserByUsername(
-                getUsername(token));
-        return new UsernamePasswordAuthenticationToken(userDetails, "", userDetails.getAuthorities());
-    }
 
-    private String getUsername(String token) {
-        Claims claims = Jwts.parser().setSigningKey(privateKey.getEncoded()).parseClaimsJws(token).getBody();
-        return claims.getSubject();
-    }
+        // We will get the username from the token
+        // And then get the UserDetails for this user from our service
+        // We can then pass the UserDetails back to the caller
 
-    public String resolveToken(HttpServletRequest request) {
-        String bearerToken = request.getHeader("Authorization");
-        if (!Objects.isNull(bearerToken) && bearerToken.startsWith("Bearer ")) {
-            return bearerToken.substring(7);
-        }
-        return null;
-    }
-
-    public boolean validateToken(String token) {
         try {
-            Jwts.parser().setSigningKey(privateKey.getEncoded()).parseClaimsJws(token);
+            Jws<Claims> claims = Jwts.parserBuilder().setSigningKey(privateKey).build().parseClaimsJws(token);
+            String username = claims.getBody().getSubject();
+            UserDetails userDetails = memberDetailsService.loadUserByUsername(username);
+            return new UsernamePasswordAuthenticationToken(userDetails, "", userDetails.getAuthorities());
         } catch (JwtException | IllegalArgumentException e) {
             throw new JwtException("Bearer token not valid");
         }
-        return true;
     }
 }
-
