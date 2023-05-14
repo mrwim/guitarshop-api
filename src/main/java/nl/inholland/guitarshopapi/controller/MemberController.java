@@ -1,13 +1,12 @@
 package nl.inholland.guitarshopapi.controller;
 
 import nl.inholland.guitarshopapi.model.dto.LoginDTO;
+import nl.inholland.guitarshopapi.model.dto.TokenDTO;
 import nl.inholland.guitarshopapi.service.MemberService;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
-import java.util.Collections;
 
 @RestController
 @RequestMapping("/members")
@@ -20,9 +19,9 @@ public class MemberController {
     }
 
     @PostMapping
-    public Object login(@RequestBody LoginDTO dto) {
-        return Collections.singletonMap(
-                "token", memberService.login(dto.username(), dto.password())
+    public Object login(@RequestBody LoginDTO dto) throws Exception {
+        return new TokenDTO(
+                memberService.login(dto.username(), dto.password())
         );
     }
 }

@@ -1,0 +1,65 @@
+package nl.inholland.guitarshopapi.cucumber.login;
+
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import io.cucumber.java.Before;
+import io.cucumber.java.en.Given;
+import io.cucumber.java.en.Then;
+import io.cucumber.java.en.When;
+import lombok.SneakyThrows;
+import lombok.extern.java.Log;
+import nl.inholland.guitarshopapi.configuration.SSLUtils;
+import nl.inholland.guitarshopapi.cucumber.guitars.BaseStepDefinitions;
+import nl.inholland.guitarshopapi.model.dto.LoginDTO;
+import nl.inholland.guitarshopapi.model.dto.TokenDTO;
+import org.junit.jupiter.api.Assertions;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.web.client.TestRestTemplate;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.ResponseEntity;
+
+@Log
+public class LoginStepDefinitions extends BaseStepDefinitions {
+
+    private static final String LOGIN_ENDPOINT = "/members";
+    private LoginDTO loginDTO;
+    private String token;
+    private HttpHeaders httpHeaders = new HttpHeaders();
+    private ResponseEntity response;
+    @Autowired
+    private TestRestTemplate restTemplate;
+    @Autowired
+    private ObjectMapper objectMapper;
+
+    @SneakyThrows
+    @Before
+    public void init() {
+        SSLUtils.turnOffSslChecking();
+        log.info("Turned off SSL checking");
+    }
+
+    @Given("I have a valid login object with user {string} and password {string}")
+    public void iHaveAValidLoginObjectWithUserAndPassword(String username, String password) {
+        loginDTO = new LoginDTO(username, password);
+    }
+
+    @When("I call the application login endpoint")
+    public void iCallTheApplicationLoginEndpoint() throws JsonProcessingException {
+        httpHeaders.add("Content-Type", "application/json");
+        response = restTemplate.exchange(
+                LOGIN_ENDPOINT,
+                HttpMethod.POST,
+                new HttpEntity<>(
+                        objectMapper.writeValueAsString(loginDTO),
+                        httpHeaders), String.class
+        );
+    }
+
+    @Then("I receive a token")
+    public void iReceiveAToken() throws JsonProcessingException {
+        TokenDTO dto = objectMapper.readValue(response.getBody().toString(), TokenDTO.class);
+        Assertions.assertNotNull(dto.token());
+    }
+}

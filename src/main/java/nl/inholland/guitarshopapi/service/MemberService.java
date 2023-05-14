@@ -38,12 +38,8 @@ public class MemberService {
         return (List<Member>) memberRepository.findAll();
     }
 
-    public String login(String username, String password) {
-        try {
-            authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(username, password));
-            return jwtTokenProvider.createToken(username, new ArrayList<>());
-        } catch (Exception e) {
-            throw new IllegalArgumentException("Invalid Credentials");
-        }
+    public String login(String username, String password) throws Exception {
+        authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(username, password));
+        return jwtTokenProvider.createToken(username, new ArrayList<>());
     }
 }
