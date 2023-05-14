@@ -40,13 +40,12 @@ public class MemberService {
         Member member = this.memberRepository.findMemberByUsername(username).orElse(null);
 
         // If they don't, throw an exception (handled in our global exception handler)
-        if(member == null) {
+        if (member == null) {
             throw new AuthenticationException("User not found");
         }
 
         // If they do, check if the password hash matches
         if (bCryptPasswordEncoder.matches(password, member.getPassword())) {
-
             // Return a JWT to the client
             return jwtTokenProvider.createToken(member.getUsername(), member.getRoles());
         } else {

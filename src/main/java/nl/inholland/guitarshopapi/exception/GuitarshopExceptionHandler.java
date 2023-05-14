@@ -46,10 +46,10 @@ public class GuitarshopExceptionHandler extends ResponseEntityExceptionHandler {
     @ExceptionHandler(value = {AuthenticationException.class})
     public ResponseEntity<Object> handleAuthenticationException(AuthenticationException authenticationException,
                                                                 WebRequest webRequest) {
-        return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+        return ResponseEntity.status(HttpStatus.FORBIDDEN)
                 .body(
                         new ExceptionDTO(
-                                401,
+                                403,
                                 authenticationException.getClass().getName(),
                                 authenticationException.getMessage()
                         )
