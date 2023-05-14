@@ -74,13 +74,13 @@ public class MyApplicationRunner implements ApplicationRunner {
         admin.setUsername("admin");
         admin.setPassword("password");
         admin.setRoles(List.of(Role.ROLE_ADMIN));
-        memberService.add(admin);
+        memberService.addMember(admin);
 
         Member user = new Member();
         user.setUsername("user");
         user.setPassword("password");
         user.setRoles(List.of(Role.ROLE_USER));
-        memberService.add(user);
+        memberService.addMember(user);
 
         memberService.getAllMembers().forEach(System.out::println);
     }

@@ -9,7 +9,6 @@ import java.util.Random;
 @Configuration
 public class BeanFactory {
 
-
     @Bean
     public BCryptPasswordEncoder bCryptPasswordEncoder() {
         return new BCryptPasswordEncoder(12);

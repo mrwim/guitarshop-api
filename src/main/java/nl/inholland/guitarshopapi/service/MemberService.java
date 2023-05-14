@@ -22,7 +22,7 @@ public class MemberService {
         this.jwtTokenProvider = jwtTokenProvider;
     }
 
-    public Member add(Member member) {
+    public Member addMember(Member member) {
         if (memberRepository.findMemberByUsername(member.getUsername()).isEmpty()) {
             member.setPassword(bCryptPasswordEncoder.encode(member.getPassword()));
             return memberRepository.save(member);
@@ -34,17 +34,13 @@ public class MemberService {
         return (List<Member>) memberRepository.findAll();
     }
 
-
     public String login(String username, String password) throws Exception {
-        // See if a user with the provided username exists
-        Member member = this.memberRepository.findMemberByUsername(username).orElse(null);
+        // See if a user with the provided username exists or throw exception
+        Member member = this.memberRepository
+                .findMemberByUsername(username)
+                .orElseThrow(() -> new AuthenticationException("User not found"));
 
-        // If they don't, throw an exception (handled in our global exception handler)
-        if (member == null) {
-            throw new AuthenticationException("User not found");
-        }
-
-        // If they do, check if the password hash matches
+        // Check if the password hash matches
         if (bCryptPasswordEncoder.matches(password, member.getPassword())) {
             // Return a JWT to the client
             return jwtTokenProvider.createToken(member.getUsername(), member.getRoles());
