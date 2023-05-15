@@ -1,8 +1,8 @@
 package nl.inholland.guitarshopapi.controller;
 
+import nl.inholland.guitarshopapi.configuration.ApiTestConfiguration;
 import nl.inholland.guitarshopapi.model.Brand;
 import nl.inholland.guitarshopapi.service.BrandService;
-import nl.inholland.guitarshopapi.util.JwtTokenProvider;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mockito;
@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.context.annotation.Import;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
@@ -22,8 +23,9 @@ import static org.hamcrest.Matchers.hasSize;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 
 
-@ExtendWith(SpringExtension.class)
+@ExtendWith({SpringExtension.class})
 @WebMvcTest(BrandController.class)
+@Import(ApiTestConfiguration.class)
 class BrandControllerTest {
 
     @Autowired
@@ -31,9 +33,6 @@ class BrandControllerTest {
 
     @MockBean
     private BrandService brandService;
-
-    @MockBean
-    private JwtTokenProvider jwtTokenProvider;
 
     @Value("${application.max.content.size}")
     private int maxSize;
