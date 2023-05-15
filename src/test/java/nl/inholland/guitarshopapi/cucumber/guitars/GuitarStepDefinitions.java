@@ -24,6 +24,7 @@ import org.springframework.http.ResponseEntity;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 
 @Log
 public class GuitarStepDefinitions extends BaseStepDefinitions {
@@ -31,7 +32,7 @@ public class GuitarStepDefinitions extends BaseStepDefinitions {
     HttpHeaders httpHeaders = new HttpHeaders();
     @Autowired
     private TestRestTemplate restTemplate;
-    private ResponseEntity response;
+    private ResponseEntity<String> response;
     @Autowired
     private ObjectMapper mapper;
 
@@ -55,8 +56,8 @@ public class GuitarStepDefinitions extends BaseStepDefinitions {
                         null,
                         httpHeaders),
                 String.class);
-        List<String> options = Arrays.stream(response.getHeaders()
-                .get("Allow")
+        List<String> options = Arrays.stream(Objects.requireNonNull(response.getHeaders()
+                        .get("Allow"))
                 .get(0)
                 .split(",")).toList();
 
@@ -110,7 +111,7 @@ public class GuitarStepDefinitions extends BaseStepDefinitions {
 
     @And("The price of the guitar is {int}")
     public void thePriceOfTheGuitarIs(int price) throws JsonProcessingException {
-        String body = response.getBody().toString();
+        String body = response.getBody();
         Guitar guitar = mapper.readValue(body, Guitar.class);
         double actual = guitar.getPrice();
         Assertions.assertEquals(price, actual);
@@ -129,7 +130,7 @@ public class GuitarStepDefinitions extends BaseStepDefinitions {
                 .exchange("/members",
                         HttpMethod.POST,
                         new HttpEntity<>(mapper.writeValueAsString(loginDTO), httpHeaders), String.class);
-        TokenDTO tokenDTO = mapper.readValue(response.getBody().toString(), TokenDTO.class);
+        TokenDTO tokenDTO = mapper.readValue(response.getBody(), TokenDTO.class);
         return tokenDTO.token();
     }
 

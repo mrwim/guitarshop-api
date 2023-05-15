@@ -26,8 +26,8 @@ public class LoginStepDefinitions extends BaseStepDefinitions {
     private static final String LOGIN_ENDPOINT = "/members";
     private LoginDTO loginDTO;
     private String token;
-    private HttpHeaders httpHeaders = new HttpHeaders();
-    private ResponseEntity response;
+    private final HttpHeaders httpHeaders = new HttpHeaders();
+    private ResponseEntity<String> response;
 
 
     @Autowired
@@ -61,8 +61,8 @@ public class LoginStepDefinitions extends BaseStepDefinitions {
 
     @Then("I receive a token")
     public void iReceiveAToken() throws JsonProcessingException {
-        TokenDTO dto = objectMapper.readValue(response.getBody().toString(), TokenDTO.class);
-        Assertions.assertNotNull(dto.token());
+        token = objectMapper.readValue(response.getBody(), TokenDTO.class).token();
+        Assertions.assertNotNull(token);
     }
 
     @Given("I have a valid username but invalid password")
