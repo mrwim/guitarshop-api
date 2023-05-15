@@ -15,12 +15,17 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @EnableMethodSecurity
 public class WebSecurityConfig {
 
+    // About the method security annotation enables the @PreAuthorize annotation for role-based security
+    // https://docs.spring.io/spring-security/reference/servlet/authorization/method-security.html
+
     private JwtTokenFilter jwtTokenFilter;
 
     public WebSecurityConfig(JwtTokenFilter jwtTokenFilter) {
         this.jwtTokenFilter = jwtTokenFilter;
     }
 
+    // To create our own custom security configuration, we create a SecurityFilterChain bean
+    // Read more here: https://docs.spring.io/spring-security/reference/servlet/authorization/authorize-http-requests.html
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity httpSecurity) throws Exception {
         httpSecurity.csrf().disable();
@@ -31,8 +36,9 @@ public class WebSecurityConfig {
                 .requestMatchers("/brands").authenticated()
                 .requestMatchers("/guitars").authenticated();
 
+        // We ensure our own filter is executed before the framework runs its own authentication filter code
         httpSecurity.addFilterBefore(jwtTokenFilter, UsernamePasswordAuthenticationFilter.class);
+
         return httpSecurity.build();
     }
-
 }

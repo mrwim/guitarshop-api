@@ -21,31 +21,14 @@ public class JwtTokenProvider {
     // Link to the documentation of the used JWT library:
     // https://github.com/jwtk/jjwt
 
-    @Value("${server.ssl.key-store}")
-    private String keystore;
-
-    @Value("${server.ssl.key-store-password}")
-    private String password;
-
     @Value("${application.token.validity}")
     private long validityInMicroseconds;
-
-    @Value("${server.ssl.key-alias}")
-    private String alias;
-
-    // We'll get the private key from the key store
-    private PrivateKey privateKey;
-
     private final MemberDetailsService memberDetailsService;
+    private final JwtKeyProvider jwtKeyProvider;
 
-    public JwtTokenProvider(MemberDetailsService memberDetailsService) {
+    public JwtTokenProvider(MemberDetailsService memberDetailsService, JwtKeyProvider jwtKeyProvider) {
         this.memberDetailsService = memberDetailsService;
-    }
-
-    @PostConstruct
-    protected void init() throws Exception {
-        keystore = keystore.replace("classpath:", "");
-        privateKey = (PrivateKey) KeyHelper.getPrivateKey(alias, keystore, password);
+        this.jwtKeyProvider = jwtKeyProvider;
     }
 
     public String createToken(String username, List<Role> roles) throws JwtException {
@@ -70,10 +53,12 @@ public class JwtTokenProvider {
         Claims claims = Jwts.claims().setSubject(username);
 
         // And we add an array of the roles to the auth element of the Claims
+        // Note that we only provide the role as information to the frontend
+        // The actual role based authorization should always be done in the backend code
         claims.put("auth",
                 roles
                         .stream()
-                        .map(r -> new SimpleGrantedAuthority(r.getAuthority()))
+                        .map(Role::name)
                         .toList());
 
         // We decide on an expiration date
@@ -85,7 +70,7 @@ public class JwtTokenProvider {
                 .setClaims(claims)
                 .setIssuedAt(now)
                 .setExpiration(expiration)
-                .signWith(privateKey)
+                .signWith(jwtKeyProvider.getPrivateKey())
                 .compact();
     }
 
@@ -94,9 +79,8 @@ public class JwtTokenProvider {
         // We will get the username from the token
         // And then get the UserDetails for this user from our service
         // We can then pass the UserDetails back to the caller
-
         try {
-            Jws<Claims> claims = Jwts.parserBuilder().setSigningKey(privateKey).build().parseClaimsJws(token);
+            Jws<Claims> claims = Jwts.parserBuilder().setSigningKey(jwtKeyProvider.getPrivateKey()).build().parseClaimsJws(token);
             String username = claims.getBody().getSubject();
             UserDetails userDetails = memberDetailsService.loadUserByUsername(username);
             return new UsernamePasswordAuthenticationToken(userDetails, "", userDetails.getAuthorities());
