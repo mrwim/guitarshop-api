@@ -1,5 +1,6 @@
 package nl.inholland.guitarshopapi.controller;
 
+import nl.inholland.guitarshopapi.configuration.ApiTestConfiguration;
 import nl.inholland.guitarshopapi.model.Brand;
 import nl.inholland.guitarshopapi.service.BrandService;
 import org.junit.jupiter.api.Test;
@@ -9,6 +10,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.context.annotation.Import;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
@@ -20,8 +23,9 @@ import static org.hamcrest.Matchers.hasSize;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 
 
-@ExtendWith(SpringExtension.class)
+@ExtendWith({SpringExtension.class})
 @WebMvcTest(BrandController.class)
+@Import(ApiTestConfiguration.class)
 class BrandControllerTest {
 
     @Autowired
@@ -34,6 +38,7 @@ class BrandControllerTest {
     private int maxSize;
 
     @Test
+    @WithMockUser(username = "admin", roles = {"ADMIN"})
     void callingBrandControllerShouldReturnListOfOneBrand() throws Exception {
         Mockito.when(brandService.getAllBrands())
                 .thenReturn(List.of(
