@@ -16,7 +16,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.Comparator;
 import java.util.List;
 
 @RestController
@@ -34,20 +33,7 @@ public class GuitarController {
     @PreAuthorize("hasAnyRole('USER', 'ADMIN')")
     public ResponseEntity<Object> getAllGuitars(@RequestParam(required = false, defaultValue = "asc") String order) {
         // The result could just as well - or even better - be accomplished by queries on the database itself
-        List<Guitar> guitars = guitarService.getAllGuitars();
-        Comparator<Guitar> comparator =
-                order.startsWith("desc") ? new Comparator<Guitar>() {
-                    @Override
-                    public int compare(Guitar guitar, Guitar other) {
-                        return (int) (other.getPrice() - guitar.getPrice());
-                    }
-                } : new Comparator<Guitar>() {
-                    @Override
-                    public int compare(Guitar guitar, Guitar other) {
-                        return (int) (guitar.getPrice() - other.getPrice());
-                    }
-                };
-        guitars.sort(comparator);
+        List<Guitar> guitars = guitarService.getAllGuitars(order);
         return ResponseEntity.ok(guitars);
     }
 
