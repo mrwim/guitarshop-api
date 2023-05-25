@@ -28,13 +28,13 @@ public class WebSecurityConfig {
     // Read more here: https://docs.spring.io/spring-security/reference/servlet/authorization/authorize-http-requests.html
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity httpSecurity) throws Exception {
-        httpSecurity.csrf().disable();
-        httpSecurity.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+        httpSecurity.csrf((csrf -> csrf.ignoringRequestMatchers("/*")));
+        httpSecurity.sessionManagement(sess -> sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
 
-        httpSecurity.authorizeHttpRequests()
+        httpSecurity.authorizeHttpRequests((authz) -> authz
                 .requestMatchers("/members").permitAll()
                 .requestMatchers("/brands").authenticated()
-                .requestMatchers("/guitars").authenticated();
+                .requestMatchers("/guitars").authenticated());
 
         // We ensure our own filter is executed before the framework runs its own authentication filter code
         httpSecurity.addFilterBefore(jwtTokenFilter, UsernamePasswordAuthenticationFilter.class);
