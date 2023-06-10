@@ -56,7 +56,7 @@ public class WebSecurityConfig {
     @Bean
     CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(List.of("http://localhost:3000")); // default port for VueJS app
+        configuration.setAllowedOrigins(List.of("http://localhost:5173")); // default port for VueJS app
         configuration.setAllowedMethods(List.of("GET", "POST", "HEAD", "OPTIONS", "PUT", "DELETE", "PATCH"));
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration);
